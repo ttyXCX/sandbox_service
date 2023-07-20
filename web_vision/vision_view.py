@@ -32,7 +32,7 @@ def detect_objects():
                 "msg": "Invalid image argument"
             }
         else:
-            results = model.predict_from_array(img_arr)
+            results = model.predict_objects(img_arr)
             response_data = model.parse_info(results[0])
             response = {
                 "status": 200,
@@ -70,7 +70,7 @@ def detect_light_color():
                 "msg": "Invalid image argument"
             }
         else:
-            color = model.detect_color_from_array(img_arr)
+            color = model.detect_color(img_arr)
             response = {
                 "status": 200,
                 "data": {"color": color},

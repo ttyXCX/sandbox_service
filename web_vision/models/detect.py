@@ -26,14 +26,8 @@ class VisionDetection(object):
         
         self.save_img = save_img
     
-    def predict_from_path(self, img_path):
+    def predict_objects(self, img_path):
         results = self.model.predict(source=img_path, 
-                                     device=0, half=True,
-                                     save=self.save_img)
-        return results
-    
-    def predict_from_array(self, img_arr):
-        results = self.model.predict(source=img_arr, 
                                      device=0, half=True,
                                      save=self.save_img)
         return results
@@ -145,8 +139,8 @@ class TrafficLightDetection(VisionDetection):
         
         return color
     
-    def detect_color_from_path(self, img_path):
-        vision_results = self.predict_from_path(img_path)
+    def detect_color(self, img_path):
+        vision_results = self.predict_objects(img_path)
         color = None
         
         for rs in vision_results:
@@ -161,23 +155,7 @@ class TrafficLightDetection(VisionDetection):
         
         return color
     
-    def detect_color_from_array(self, img_arr):
-        vision_results = self.predict_from_path(img_arr)
-        color = None
-        
-        for rs in vision_results:
-            if self.OBJECT_CLS is None:
-                self.OBJECT_CLS = rs.names
-                
-            boxes = rs.boxes
-            img_traffic_light = self.__crop_traffic_light(rs.orig_img, boxes)
-            color = self.__recognize_color(img_traffic_light)
-            # one image at a time
-            break
-        
-        return color
-
-
+    
 if __name__ == "__main__":
     img_path = "/data/cty/sandbox_service/web_vision/rgb_test.png"
 
@@ -190,9 +168,9 @@ if __name__ == "__main__":
     # with open("/data/cty/sandbox_service/web_vision/rgb_test.txt", "w") as f:
     #     f.write(img_str)
     
-    results = vision_traffic.predict_from_array(img_arr)
+    results = vision_traffic.predict_objects(img_arr)
     obj_info = vision_traffic.parse_info(results[0])
     
     for i in range(100):
-        color = vision_traffic.detect_color_from_array(img_arr)
-    #     color = vision_traffic.detect_color_from_path(img_path)
+        color = vision_traffic.detect_color(img_arr)
+    #     color = vision_traffic.detect_color(img_path)
