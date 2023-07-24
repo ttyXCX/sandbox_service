@@ -68,6 +68,7 @@ class TrafficLightDetection(VisionDetection):
         box_pos = boxes.xyxy
         box_cls = boxes.cls
         img_traffic_light = None
+        x1, y1, x2, y2 = 0, 0, 0, 0
         
         for i in range(len(box_cls)):
             cls = int(box_cls[i])
