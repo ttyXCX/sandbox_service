@@ -60,7 +60,7 @@ def detect_light_color():
         elif request.content_type.startswith("multipart/form-data"):
             img = request.form.get("image")
         else:
-            img = request.values.get("image")            
+            img = request.values.get("image")
         
         img_arr = img_cvt.decode(img)
         if img_arr is None:
@@ -70,10 +70,11 @@ def detect_light_color():
                 "msg": "Invalid image argument"
             }
         else:
-            color = model.detect_color(img_arr)
+            color, size = model.detect(img_arr)
             response = {
                 "status": 200,
-                "data": {"color": color},
+                "data": {"color": color,
+                         "size": size},
                 "msg": "success"
             }
     except Exception as e:

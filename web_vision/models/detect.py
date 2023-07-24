@@ -78,7 +78,7 @@ class TrafficLightDetection(VisionDetection):
             x1, y1, x2, y2 = int(pos[0]), int(pos[1]), int(pos[2]), int(pos[3])
             img_traffic_light = img[y1: y2 + 1, x1: x2 + 1, :]
             
-        return img_traffic_light
+        return img_traffic_light, (x1, y1, x2, y2)
     
     @staticmethod
     def __recognize_color(img_light):
@@ -139,21 +139,23 @@ class TrafficLightDetection(VisionDetection):
         
         return color
     
-    def detect_color(self, img_path):
+    def detect(self, img_path):
         vision_results = self.predict_objects(img_path)
         color = None
+        size = None
         
         for rs in vision_results:
             if self.OBJECT_CLS is None:
                 self.OBJECT_CLS = rs.names
             
             boxes = rs.boxes
-            img_traffic_light = self.__crop_traffic_light(rs.orig_img, boxes)
+            img_traffic_light, (x1, y1, x2, y2) = self.__crop_traffic_light(rs.orig_img, boxes)
             color = self.__recognize_color(img_traffic_light)
+            size = (x2 - x1) * (y2 - y1)
             # one image at a time
             break
         
-        return color
+        return color, size
     
     
 if __name__ == "__main__":
